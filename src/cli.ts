@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs/promises";
 
 import { Differ } from "./diff";
+import { EntryParser } from "./parser";
 
 console.log("Hummer cli: Hi");
 
@@ -11,6 +12,7 @@ const projectPath =
 
 // Initialize
 const differ = new Differ();
+const parser = new EntryParser();
 
 const watcher = chokidar.watch(projectPath, {
   persistent: true,
@@ -28,6 +30,13 @@ watcher.on("change", async (filepath) => {
 
   const contents = await fs.readFile(filepath, "utf-8");
 
-  const diff = differ.checkDiff(filename, contents);
-  console.log("Diff:", diff);
+  const newLines = differ.checkDiff(filename, contents);
+
+  if (newLines) {
+    console.log(newLines.length);
+
+    for (const line of newLines) {
+      parser.parse(line);
+    }
+  }
 });

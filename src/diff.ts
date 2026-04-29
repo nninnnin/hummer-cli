@@ -10,12 +10,15 @@ export class Differ {
   checkDiff(filename: string, content: string) {
     const cache = this.cache.get(filename);
 
+    this.cache.set(filename, content);
+
     if (!cache) {
-      this.cache.set(filename, content);
-      return "No Diff";
+      return false;
     }
 
-    this.cache.set(filename, content);
-    return diffLines(cache, content);
+    return diffLines(cache, content)
+      .filter((part) => part.added)
+      .flatMap((part) => part.value.split("\n"))
+      .filter((line) => line.trim().length > 0);
   }
 }
