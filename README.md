@@ -1,3 +1,5 @@
+# Hummer cli
+
 메모
 
 - claude-status-bar 분석해서 rate limit 정보 노출 예정
